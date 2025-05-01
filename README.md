@@ -34,3 +34,39 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Guía de Componentes
+
+A continuación se muestran pautas para configurar componentes de React que funcionen con la carga de páginas dinámica en este proyecto:
+
+1. Nombres y Exports  
+   • Cada componente debe tener un export con el mismo nombre que su archivo.  
+   • Por ejemplo, Hero1.tsx exporta "Hero1" y debe importarse con ese nombre exacto al utilizarlo dinámicamente.
+
+2. Convención de Props  
+   • La mayoría de componentes aceptan props opcionales como "primaryColor," "secondaryColor" o "textColor."  
+   • Además, muchos componentes aceptan props de tipo "TextFormat," que pueden ser un string o un objeto con "text" y "className."  
+   • Asegúrate de definir todas las props personalizadas como opcionales cuando sea necesario, para evitar errores si dichas props no se pasan.
+
+3. Helpers de Renderizado  
+   • Muchos componentes tienen una función "renderTextFormat" para manejar un string o un objeto "TextFormat." Sigue este patrón de manera consistente.
+
+4. Registro y Uso Dinámico  
+   • Los componentes se registran en "lib/registry" (importado como R en "page.tsx"). Deben ser exports nominales para ser reconocidos e instanciados dinámicamente.  
+   • No cambies la firma del componente (props o nombre de export) si se usa en el registro; la carga dinámica podría fallar.
+
+5. Obtención de Datos y “'use client'”  
+   • Algunos componentes (por ejemplo, ProductGridProps) obtienen datos de una API. Si un componente obtiene datos directamente, márcalo con “'use client'” si se ejecuta en el cliente.  
+   • De lo contrario, mantén la obtención de datos en componentes o rutas del servidor siempre que sea posible.
+
+6. Layout y Componentes Wrapper  
+   • El componente Layout administra el renderizado de diferentes secciones (header, barras laterales, footer). Evita modificar Layout a menos que sea necesario.  
+   • Mantén cada componente aislado con efectos mínimos para asegurar que pueda incluirse dinámicamente sin interferir con otras partes de la página.
+
+7. Estilos y Uso de Tailwind  
+   • El proyecto usa Tailwind. Emplea clases utilitarias e inline styles para cambios de color dinámicos.  
+   • Define color, layout y espacios mediante props si se usan en varias secciones.
+
+8. Pruebas y Mantenimiento  
+   • Antes de confirmar cambios, verifica que los componentes se rendericen correctamente en la estructura de página dinámica registrándolos y usándolos en la configuración de la página.  
+   • Mantén las importaciones consistentes. Evita exports por defecto en componentes muy reutilizados, a menos que se requiera en el patrón actual.
