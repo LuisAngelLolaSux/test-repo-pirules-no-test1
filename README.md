@@ -41,26 +41,28 @@ A continuación se muestran pautas para configurar componentes de React que func
 
 1. Nombres y Exports  
    • Cada componente debe tener un export con el mismo nombre que su archivo.  
-   • Por ejemplo, Hero1.tsx exporta "Hero1" y debe importarse con ese nombre exacto al utilizarlo dinámicamente.
+   • Los componentes con distintas variaciones deben seguir el fromato numerado {nombreComponente}{# de variacion}
+   • Por ejemplo, Hero1.tsx exporta "Hero1" y debe importarse con ese nombre exacto al utilizarlo dinámicamente, y los variantes serian Hero2, Hero3, etc.
+   
 
 2. Convención de Props  
    • La mayoría de componentes aceptan props opcionales como "primaryColor," "secondaryColor" o "textColor."  
-   • Además, muchos componentes aceptan props de tipo "TextFormat," que pueden ser un string o un objeto con "text" y "className."  
+   • Además, muchos componentes aceptan props de tipo "TextFormat," que pueden ser un string o un objeto con "text" y "className." para poder dar formatos especiales 
    • Asegúrate de definir todas las props personalizadas como opcionales cuando sea necesario, para evitar errores si dichas props no se pasan.
 
 3. Helpers de Renderizado  
-   • Muchos componentes tienen una función "renderTextFormat" para manejar un string o un objeto "TextFormat." Sigue este patrón de manera consistente.
+   • Muchos componentes tienen una función "renderTextFormat" para manejar un string o un objeto "TextFormat." Seguir este patrón de manera consistente.
 
 4. Registro y Uso Dinámico  
-   • Los componentes se registran en "lib/registry" (importado como R en "page.tsx"). Deben ser exports nominales para ser reconocidos e instanciados dinámicamente.  
+   • Los componentes se registran en "lib/registry" (importado como R en "page.tsx"). Deben ser exports nominales explicitos para ser reconocidos e instanciados dinámicamente.  
    • No cambies la firma del componente (props o nombre de export) si se usa en el registro; la carga dinámica podría fallar.
 
 5. Obtención de Datos y “'use client'”  
    • Algunos componentes (por ejemplo, ProductGridProps) obtienen datos de una API. Si un componente obtiene datos directamente, márcalo con “'use client'” si se ejecuta en el cliente.  
-   • De lo contrario, mantén la obtención de datos en componentes o rutas del servidor siempre que sea posible.
+   • De lo contrario, manténer la obtención de datos en componentes o rutas del servidor siempre que sea posible.
 
 6. Layout y Componentes Wrapper  
-   • El componente Layout administra el renderizado de diferentes secciones (header, barras laterales, footer). Evita modificar Layout a menos que sea necesario.  
+   • El componente Layout administra el renderizado de diferentes secciones (header, barras laterales, footer). Evita modificar Layout a menos que sea necesario. queda pendiente de refactorizar
    • Mantén cada componente aislado con efectos mínimos para asegurar que pueda incluirse dinámicamente sin interferir con otras partes de la página.
 
 7. Estilos y Uso de Tailwind  
@@ -68,5 +70,5 @@ A continuación se muestran pautas para configurar componentes de React que func
    • Define color, layout y espacios mediante props si se usan en varias secciones.
 
 8. Pruebas y Mantenimiento  
-   • Antes de confirmar cambios, verifica que los componentes se rendericen correctamente en la estructura de página dinámica registrándolos y usándolos en la configuración de la página.  
+   • Antes de confirmar cambios, verifica que los componentes se rendericen correctamente en la estructura de página dinámica registrándolos y usándolos en la configuración de la página, de ser posible  
    • Mantén las importaciones consistentes. Evita exports por defecto en componentes muy reutilizados, a menos que se requiera en el patrón actual.
