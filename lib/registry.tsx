@@ -1,0 +1,21 @@
+export * from "@/components/HeroProps";
+export * from "@/components/InfoGridProps";
+export * from "@/components/TestimonialProps";
+export * from "@/components/TestimonialsProps";
+export * from "@/components/GalleryProps";
+export * from "@/components/FormProps";
+export * from "@/components/CartProps";
+export * from "@/components/PromotionHeaderProps";
+export * from "@/components/TeamProps";
+export * from "@/components/FAQProps";
+export * from "@/components/ContactProps";
+export * from "@/components/ProductGridProps";
+export { Layout } from "@/components/Layout";
+export * from "@/components/headers";
+export * from "@/components/heroes";
+export * from "@/components/grids";
+export * from "@/components/navbars";
+export * from "@/components/ProductoIndividual";
+
+export { default as ProductGridProps1 } from "@/components/ProductGridProps1";
+export { default as ProductGridProps2 } from "@/components/ProductGridProps2";
