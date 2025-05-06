@@ -17,5 +17,23 @@ export async function getConfig() {
   const cfg = await PageConfig.findOne({}).lean();
   console.log("DEBUG: PageConfig:", cfg); // Debug log to check the fetched config
   if (!cfg) throw new Error("No PageConfig found");
-  return cfg;
+
+  const config = {
+    ...cfg,
+    paginas: [
+      ...(cfg.paginas || []),
+      {
+        ruta: "/productos/*",
+        componentes: [
+          {
+            componente: "ProductoIndividual",
+            // ...other props as needed...
+          },
+        ],
+      },
+    ],
+  };
+
+  console.log("DEBUG: available pages:", config.paginas); // Debug log to check available pages
+  return config;
 }

@@ -80,6 +80,11 @@ const productoSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    slug: {
+      type: String,
+      default: null,
+      unique: true,
+    },
     variantes: {
       type: [varianteSchema],
       default: [],

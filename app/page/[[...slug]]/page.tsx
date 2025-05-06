@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getConfig } from "@/lib/getConfig";
 import * as R from "@/lib/registry";
+import { connectToDB } from "@/utils/mongoDB";
+import Producto from "@/models/Productos";
 
 export const revalidate = 60; // ISR 1 min – ajusta o 0 para siempre dinámico
 
@@ -17,15 +19,29 @@ export async function generateStaticParams() {
   const wild = cfg.paginas.find((p: any) => p.ruta === "/productos/*");
   let dyn: { slug: string[] }[] = [];
   if (wild) {
-    // ← reemplaza con tu fetch de slugs
-    const prods = await fetch(process.env.PRODUCT_API!).then((r) => r.json());
-    dyn = prods.map((p: any) => ({ slug: ["productos", p.slug] }));
+    // Use absolute URL for the API call
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const prods = await fetch(new URL("/api/productos", baseUrl)).then((r) => r.json());
+    dyn = prods.map((p: any) => ({ slug: ["productos", p._id] }));
+  }
+
+  // Ejemplo wildcard /categorias/*
+  const cat = cfg.paginas.find((p: any) => p.ruta === "/categorias/*");
+  if (cat) {
+    await connectToDB();
+    const userId = process.env.LOLA_USER_ID;
+    const categories = await Producto.distinct("categoria", {
+      userId,
+      categoria: { $nin: [null, ""] },
+    });
+    dyn.push(...categories.map((c: string) => ({ slug: ["categorias", c] })));
   }
 
   return [...staticPaths, ...dyn];
 }
 
-export default async function Page({ params }: { params: { slug?: string[] } }) {
+export default async function Page(context: { params: { slug?: string[] } }) {
+  const { params } = context;
   const path = "/" + (params.slug?.join("/") ?? "");
   const cfg = await getConfig();
 
@@ -47,9 +63,38 @@ export default async function Page({ params }: { params: { slug?: string[] } }) 
   /* Ejemplo de data extra para /productos/* */
   let extra = {};
   if (page.ruta === "/productos/*") {
-    const slug = params.slug![1];
-    extra = await fetch(`${process.env.PRODUCT_API}/${slug}`).then((r) => r.json());
+    const id = params.slug?.[1];
+    if (id) {
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+      // Use absolute URL for the API call
+      const productData = await fetch(new URL(`/api/productos/${id}`, baseUrl)).then((r) =>
+        r.json()
+      );
+      extra = { product: productData };
+    }
   }
+
+  /* Ejemplo de data extra para /categorias/* */
+  if (page.ruta === "/categorias/*") {
+    await connectToDB();
+    const userId = process.env.LOLA_USER_ID;
+    const slug = params.slug?.[1];
+    if (!slug) {
+      // Show categories grid
+      const categories = await Producto.distinct("categoria", {
+        userId,
+        categoria: { $nin: [null, ""] },
+      });
+      extra = { categories };
+    } else {
+      // Show products from this category
+      const products = await Producto.find({ userId, categoria: slug }).lean();
+      extra = { products, category: slug };
+    }
+  }
+
+  // Log the array of components for debugging
+  console.log("DEBUG: page.componentes:", page.componentes);
 
   return (
     <>

@@ -19,11 +19,15 @@ interface Producto {
   }[];
 }
 
-export function ProductoIndividual() {
-  const [product, setProduct] = useState<Producto | null>(null);
+export function ProductoIndividual({ product }: { product?: Producto }) {
+  const [productState, setProduct] = useState<Producto | null>(null);
   const [selectedVariant, setSelectedVariant] = useState("");
 
   useEffect(() => {
+    if (product) {
+      setProduct(product);
+      return;
+    }
     fetch("/api/productos")
       .then((res) => res.json())
       .then((data: Producto[]) => {
@@ -34,9 +38,9 @@ export function ProductoIndividual() {
         setProduct(withVariants || data[0] || null);
       })
       .catch(() => setProduct(null));
-  }, []);
+  }, [product]);
 
-  if (!product) {
+  if (!productState) {
     return (
       <div className="flex h-80 items-center justify-center">
         <span className="text-lg text-gray-400">Cargando producto...</span>
@@ -44,21 +48,26 @@ export function ProductoIndividual() {
     );
   }
 
-  const hasVariants = product.variantesCombinadas && product.variantesCombinadas.length > 0;
+  const hasVariants =
+    productState.variantesCombinadas && productState.variantesCombinadas.length > 0;
   const selectedVariantObj = hasVariants
-    ? product.variantesCombinadas?.find((v) => v.variante === selectedVariant)
+    ? productState.variantesCombinadas?.find((v) => v.variante === selectedVariant)
     : null;
 
   return (
     <div className="mx-auto max-w-md overflow-hidden rounded-xl bg-white p-6 shadow-md">
       <div className="flex flex-col items-center">
         <img
-          src={product.imagenes && product.imagenes[0] ? product.imagenes[0] : "/placeholder.png"}
-          alt={product.nombre}
+          src={
+            productState.imagenes && productState.imagenes[0]
+              ? productState.imagenes[0]
+              : "/placeholder.png"
+          }
+          alt={productState.nombre}
           className="mb-4 h-60 w-full rounded-lg object-cover"
         />
-        <h2 className="mb-2 text-center text-2xl font-bold">{product.nombre}</h2>
-        <p className="mb-4 text-center text-gray-600">{product.descripcion}</p>
+        <h2 className="mb-2 text-center text-2xl font-bold">{productState.nombre}</h2>
+        <p className="mb-4 text-center text-gray-600">{productState.descripcion}</p>
         {hasVariants && (
           <div className="mb-4 w-full">
             <label className="mb-1 block font-medium text-gray-700">Variante:</label>
@@ -67,7 +76,7 @@ export function ProductoIndividual() {
               onChange={(e) => setSelectedVariant(e.target.value)}
               className="w-full rounded border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
               <option value="">Seleccione variante</option>
-              {product.variantesCombinadas?.map((v) => (
+              {productState.variantesCombinadas?.map((v) => (
                 <option key={v.variante} value={v.variante}>
                   {v.variante}
                 </option>
@@ -80,7 +89,7 @@ export function ProductoIndividual() {
             $
             {hasVariants && selectedVariantObj
               ? selectedVariantObj.precio.toFixed(2)
-              : product.precio?.toFixed(2) || "N/A"}
+              : productState.precio?.toFixed(2) || "N/A"}
           </span>
           {hasVariants && selectedVariantObj && (
             <span className="text-sm text-gray-500">Stock: {selectedVariantObj.inventario}</span>
