@@ -55,9 +55,9 @@ const productoSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    categoria: {
-      type: String, // Categoria del producto tenemos que crear un array de objectType de mongoose con referencia a modelo categorias que todavia no esta echo
-      default: null,
+    categorias: {
+      type: [String],
+      default: [],
     },
     precio: {
       type: Number,

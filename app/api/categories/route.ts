@@ -9,32 +9,18 @@ async function getProductCategories() {
     throw new Error("Falta la variable LOLA_USER_ID");
   }
   await connectToDB();
-  const productos = await Producto.find({ eliminado: false, userId }).select("categorias");
-  console.log("Productos encontrados:", productos);
-
-  // Ensure that each producto has a categorias array, defaulting to [] if undefined
-  const allCategorias = productos.flatMap((p) => Array.isArray(p.categorias) ? p.categorias : []);
-  console.log("Todas las categorías (antes de filtrar):", allCategorias);
-
-  const filteredCategorias = allCategorias.filter(
-    (cat) => typeof cat === "string" && cat.trim() !== ""
-  );
-  console.log("Categorías después de filtrar solo vacíos/nulos:", filteredCategorias);
-
-  const lowerCaseCategorias = filteredCategorias.map((cat) => cat.toLowerCase());
-  console.log("Categorías en minúsculas:", lowerCaseCategorias);
-
-  const uniqueCategorias = lowerCaseCategorias.filter(
-    (cat, index, self) => self.indexOf(cat) === index
-  );
-  console.log("Categorías únicas:", uniqueCategorias);
-
-  const capitalizedCategorias = uniqueCategorias.map(
-    (cat) => cat.charAt(0).toUpperCase() + cat.slice(1)
-  );
-  console.log("Categorías final capitalizadas:", capitalizedCategorias);
-
-  return capitalizedCategorias;
+        const productos = await Producto.find({ eliminado: false, userId }).select(
+          "categorias"
+        );
+        console.log("DEBUG: Productos obtenidos:", productos); // Debug log para verificar los productos
+        const categorias = productos
+          .flatMap((p) => p.categorias) // Unificamos todas las categorías
+          .filter(Boolean) // Filtramos valores nulos o vacíos
+          .map((cat) => cat.toLowerCase()) // Pasamos todo a minúsculas para normalizar
+          .filter((cat, index, self) => self.indexOf(cat) === index) // Eliminamos duplicados
+          .map((cat) => cat.charAt(0).toUpperCase() + cat.slice(1)); // Capitalizamos
+         console.log("DEBUG: Categorías obtenidas:", categorias); // Debug log para verificar las categorías
+        return categorias;
 }
 
 export async function GET() {

@@ -17,6 +17,7 @@ export * from "@/components/grids";
 export * from "@/components/navbars";
 export * from "@/components/ProductoIndividual";
 export * from "@/components/CategoryGrid";
+export * from "@/components/CategoryProducts";
 
 export { default as ProductGridProps1 } from "@/components/ProductGridProps1";
 export { default as ProductGridProps2 } from "@/components/ProductGridProps2";

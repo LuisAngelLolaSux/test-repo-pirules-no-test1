@@ -15,7 +15,7 @@ export function CategoryGrid({ primaryColor = "#2563eb" }: CategoryGridProps) {
         const response = await fetch("/api/categories");
         const data = await response.json();
         console.log("Fetched categories:", data);
-        setCategories(Array.isArray(data) ? data : []);
+        setCategories(Array.isArray(data.categories) ? data.categories : []);
       } catch (error) {
         console.error(error);
       }

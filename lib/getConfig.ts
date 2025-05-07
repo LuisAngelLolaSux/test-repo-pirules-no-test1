@@ -31,6 +31,16 @@ export async function getConfig() {
           },
         ],
       },
+      {
+        ruta: "/categorias/*",
+        componentes: [
+          {
+            componente: "CategoryProducts",
+            title: "Productos por Categoría",
+            // ...other props as needed...
+          },
+        ],
+      },
     ],
   };
 

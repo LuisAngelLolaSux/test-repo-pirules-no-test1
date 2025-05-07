@@ -28,12 +28,10 @@ export async function generateStaticParams() {
   // Ejemplo wildcard /categorias/*
   const cat = cfg.paginas.find((p: any) => p.ruta === "/categorias/*");
   if (cat) {
-    await connectToDB();
-    const userId = process.env.LOLA_USER_ID;
-    const categories = await Producto.distinct("categoria", {
-      userId,
-      categoria: { $nin: [null, ""] },
-    });
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const categoriesData = await fetch(new URL("/api/categories", baseUrl)).then((r) => r.json());
+    const categories = Array.isArray(categoriesData.categories) ? categoriesData.categories : [];
+    console.log("DEBUG: Categorías obtenidas page:", categories); // Debug log para verificar las categorías
     dyn.push(...categories.map((c: string) => ({ slug: ["categorias", c] })));
   }
 

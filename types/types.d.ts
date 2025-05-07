@@ -3,7 +3,7 @@ export interface ProductoType {
   nombre: string;
   descripcion?: string | null;
   img: string[];
-  categoria?: string | null;
+  categorias?: string[] | [];
   precio?: number | null;
   porcentajeOferta?: number | null;
   inventario?: number | null;
