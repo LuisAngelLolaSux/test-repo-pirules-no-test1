@@ -209,7 +209,7 @@ export default function CheckoutPage() {
       }
 
       // Fetch the enviosConfig from products
-      const configStr = await getConfigEnvioCheckout(ShoppingCartState ?? []);
+      const configStr = await getConfigEnvioCheckout();
       const config = configStr ? JSON.parse(configStr) : null;
       const enviosConfig = config?.tipoDeEnvio || "Automatic";
       const tipoPedido = enviosConfig.trim().includes("Auto") ? "Automatico" : "Manual";
