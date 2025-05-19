@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useCartStore } from "@/store/cartStore";
 
 interface Product {
   _id: string;
@@ -57,11 +58,36 @@ export function CategoryProducts({ category, primaryColor = "#2563eb" }: Categor
                 <img
                   src={product.imagenes[0]}
                   alt={product.nombre}
-                  className="mb-2 h-40 w-full object-cover rounded"
+                  className="mb-2 w-full object-cover rounded"
+                  style={{
+                    width: "240px",
+                    height: "160px",
+                    objectFit: "cover",
+                    display: "block",
+                    margin: "0 auto",
+                  }}
                 />
               )}
               <h3 className="font-semibold">{product.nombre}</h3>
               <p className="text-sm text-gray-600">{product.descripcion}</p>
+              <button
+                onClick={() => {
+                  const firstVariant = (product as any).variantesCombinadas?.[0];
+                  const price = firstVariant?.precio ?? (product as any).precio ?? 0;
+                  const variantId = firstVariant?._id?.toString() || undefined;
+
+                  useCartStore.getState().addToCart({
+                    id: product._id,
+                    name: product.nombre,
+                    image: product.imagenes?.[0] || "",
+                    quantity: 1,
+                    price,
+                    variante: variantId,
+                  });
+                }}
+                className="mt-2 rounded bg-blue-500 px-4 py-2 text-white">
+                Add to Cart
+              </button>
             </div>
           ))}
         </div>

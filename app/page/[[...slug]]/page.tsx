@@ -3,6 +3,7 @@ import { getConfig } from "@/lib/getConfig";
 import * as R from "@/lib/registry";
 import { connectToDB } from "@/utils/mongoDB";
 import Producto from "@/models/Productos";
+import { useCheckoutStore } from "@/store/checkoutStore";
 
 export const revalidate = 60; // ISR 1 min – ajusta o 0 para siempre dinámico
 
@@ -91,6 +92,13 @@ export default async function Page(context: { params: { slug?: string[] } }) {
     }
   }
 
+  /* Ejemplo de data extra para /checkout */
+  if (page.ruta === "/checkout") {
+    // Removed references to any previous context-based approach:
+    useCheckoutStore.getState().setShippingInfo("Información de envío obtenida");
+    useCheckoutStore.getState().setOrderSummary("Detalles de la orden pendiente");
+  }
+
   // Log the array of components for debugging
   console.log("DEBUG: page.componentes:", page.componentes);
 
@@ -98,7 +106,7 @@ export default async function Page(context: { params: { slug?: string[] } }) {
     <>
       {page.componentes.map((c: any, i: number) => {
         const Comp = (R as any)[c.componente];
-        return Comp ? <Comp key={i} {...c} {...extra} /> : null;
+        return Comp ? <Comp key={i} {...c} /> : null;
       })}
     </>
   );

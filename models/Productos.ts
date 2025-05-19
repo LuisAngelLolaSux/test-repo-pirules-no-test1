@@ -80,6 +80,18 @@ const productoSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    largo: {
+      type: Number,
+      default: null,
+    },
+    alto: {
+      type: Number,
+      default: null,
+    },
+    ancho: {
+      type: Number,
+      default: null,
+    },
     slug: {
       type: String,
       default: null,
