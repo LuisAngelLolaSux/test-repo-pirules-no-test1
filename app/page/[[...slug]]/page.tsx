@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { getConfig } from "@/lib/getConfig";
+import { getLocalConfig } from "@/lib/getConfig";
+//import { getConfig } from "@/lib/getConfig";
 import * as R from "@/lib/registry";
 import { connectToDB } from "@/utils/mongoDB";
 import Producto from "@/models/Productos";
@@ -9,7 +10,7 @@ export const revalidate = 60; // ISR 1 min – ajusta o 0 para siempre dinámico
 
 /** Pre-genera paths estáticos */
 export async function generateStaticParams() {
-  const cfg = await getConfig();
+  const cfg = await getLocalConfig();
 
   // Rutas literales
   const staticPaths = cfg.paginas
@@ -42,7 +43,7 @@ export async function generateStaticParams() {
 export default async function Page(context: { params: { slug?: string[] } }) {
   const { params } = context;
   const path = "/" + (params.slug?.join("/") ?? "");
-  const cfg = await getConfig();
+  const cfg = await getLocalConfig();
 
   // Debug logs to check what is coming from getConfig and the computed path
   console.log("DEBUG: computed path:", path);

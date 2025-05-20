@@ -1,6 +1,13 @@
 import "server-only";
 import mongoose from "mongoose";
 import PageConfig from "@/models/PageConfig";
+import { PAGE_CONFIG } from "@/pageConfigConst";
+
+export async function getLocalConfig() {
+  // Return PAGE_CONFIG directly
+  const cfg = PAGE_CONFIG;
+  return cfg;
+}
 
 async function connect() {
   const uri = process.env.DATABASE_URL;

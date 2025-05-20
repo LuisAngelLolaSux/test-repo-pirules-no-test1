@@ -154,7 +154,10 @@ export const POST = async (req: NextRequest) => {
             });
           }
         }
+
+
         // Itera sobre las variantes combinadas del producto
+        console.log("pedidoInfo.producto.variantesCombinadas.length", producto.variantesCombinadas);
         for (let j = 0; j < producto.variantesCombinadas.length; j++) {
           const varianteCombinada = producto.variantesCombinadas[j];
 

@@ -8,6 +8,16 @@ interface CartItem {
   quantity: number;
   price: number; // new: added price field
   variante?: string; // new: added variante field
+  variantesCombinadas?: Array<{
+    variante: string;
+    subVariante: string;
+    precio: number;
+    peso: number;
+    imagenes: any[];
+    inventario: number;
+    sku: string | null;
+    _id: any; // You can use `string` if you serialize ObjectId to string, or keep `any` if it's a raw ObjectId
+  }>;
 }
 
 interface CartState {

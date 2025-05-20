@@ -10,7 +10,7 @@ import { db } from '@/lib/prismaDB';
 import { generateVerificationToken, generateTwoFactorToken } from '@/lib/tokens';
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { LoginShema } from '@/schemas';
-import { AuthError } from 'next-auth';
+import AuthError from 'next-auth';
 import { z } from 'zod';
 
 export const login = async (values: z.infer<typeof LoginShema>, callbackURL?: string) => {
