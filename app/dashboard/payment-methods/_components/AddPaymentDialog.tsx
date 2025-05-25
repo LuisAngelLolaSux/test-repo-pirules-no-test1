@@ -31,6 +31,10 @@ export default function ImprovedCheckoutPage({
   const [paymentMethodId, setPaymentMethodId] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  // Get the connected account ID from the environment variable
+  const stripeAccountId =
+    process.env.NEXT_PUBLIC_LOLA_USER_STRIPE_ID || process.env.LOLA_USER_STRIPE_ID;
+
   const handleTempCardInfo = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
@@ -39,6 +43,7 @@ export default function ImprovedCheckoutPage({
       return;
     }
 
+    // Create PaymentMethod in the context of the connected account
     const { error: submitError, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
       card: elements.getElement(CardNumberElement)!,

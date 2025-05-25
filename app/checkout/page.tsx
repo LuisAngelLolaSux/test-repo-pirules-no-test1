@@ -74,6 +74,11 @@ export default function CheckoutPage() {
   const [isPageReady, setIsPageReady] = useState(false);
   const { companyDetails } = useCompanyDetails();
 
+  // State for payment methods
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
   const hasUSDProduct = ShoppingCartState?.some(
     (producto) => (producto as any).currency === "USD" // assuming you add a currency field to product if needed
   );
@@ -154,6 +159,28 @@ export default function CheckoutPage() {
     }
     fetchAmpmDeliveryOptions();
   }, [addressInfo, ShoppingCartState]);
+
+  // Fetch payment methods if user is logged in
+  useEffect(() => {
+    async function fetchPaymentMethods() {
+      try {
+        const res = await fetch("/api/payment-methods", { method: "GET" });
+        const data = await res.json();
+        if (data && Array.isArray(data.paymentMethods) && data.paymentMethods.length > 0) {
+          setPaymentMethods(data.paymentMethods);
+          setSelectedPaymentMethod(data.paymentMethods[0].id);
+          setIsLoggedIn(true);
+        } else {
+          setPaymentMethods([]);
+          setIsLoggedIn(false);
+        }
+      } catch {
+        setPaymentMethods([]);
+        setIsLoggedIn(false);
+      }
+    }
+    fetchPaymentMethods();
+  }, []);
 
   // Enviar el pedido al servidor
   const handleSubmit = async (e: React.FormEvent) => {
@@ -289,14 +316,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Add dummy payment methods and a state to select a method (moved above the conditional return)
-  const paymentMethods = [
-    { id: "pm_visa", label: "Visa ending in 1111" },
-    { id: "pm_mc", label: "Mastercard ending in 2222" },
-    { id: "pm_add", label: "Add new payment method" },
-  ];
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods[0].id);
-
   // Show a loader while the page is not ready
   if (!isPageReady) {
     return <CartLoader />;
@@ -321,20 +340,22 @@ export default function CheckoutPage() {
               label="Detalles del envío"
             />
 
-            {/* New Payment Method Dropdown */}
-            <div className="my-4">
-              <label className="block mb-2">Select Payment Method:</label>
-              <select
-                value={selectedPaymentMethod}
-                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                className="p-2 border rounded">
-                {paymentMethods.map((method) => (
-                  <option key={method.id} value={method.id}>
-                    {method.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Payment Method Dropdown - only if logged in and has payment methods */}
+            {isLoggedIn && paymentMethods.length > 0 && (
+              <div className="my-4">
+                <label className="block mb-2">Selecciona método de pago:</label>
+                <select
+                  value={selectedPaymentMethod ?? ""}
+                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                  className="p-2 border rounded">
+                  {paymentMethods.map((method) => (
+                    <option key={method.id} value={method.id}>
+                      {`${method.card.brand.toUpperCase()} ****${method.card.last4} (Expira: ${method.card.exp_month}/${method.card.exp_year})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="h-fit w-full max-w-3xl overflow-hidden rounded-lg bg-white">
               <div className="flex flex-col items-start justify-center p-4">

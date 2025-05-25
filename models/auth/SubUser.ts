@@ -10,6 +10,7 @@ const SubUserSchema = new Schema(
     password: { type: String, required: false },
     lolaParentId: { type: String, required: false },
     role: { type: String, enum: userRoleEnum, default: "USER" },
+    customerStripeId: { type: String, required: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },

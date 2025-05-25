@@ -3,12 +3,18 @@ import { Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import CheckoutHeader from './_componentes/CheckoutHeader';
 import { loadStripe } from '@stripe/stripe-js';
 
-if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
-    throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
+if (
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined ||
+  process.env.NEXT_PUBLIC_LOLA_USER_STRIPE_ID === undefined
+) {
+  throw new Error(
+    "NEXT_PUBLIC_STRIPE_PUBLIC_KEY or NEXT_PUBLIC_LOLA_USER_STRIPE_ID is not defined"
+  );
 }
 
-// Cargar la clave pública de Stripe
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!, {
+  stripeAccount: process.env.NEXT_PUBLIC_LOLA_USER_STRIPE_ID,
+});
 
 const CheckoutLayout = ({ children }: { children: React.ReactNode }) => {
     return (

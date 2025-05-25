@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/lib/prismaDB';
-import { getUserByEmail } from '@/data/user';
+import { getSubUserByEmail } from '@/data/user';
 import { getVerificationTokenByToken } from '@/data/verification-token';
 
 export const newVerification = async (token: string) => {
@@ -17,13 +17,13 @@ export const newVerification = async (token: string) => {
         return { error: 'Token expirado!' };
     }
 
-    const existingUser = await getUserByEmail(existingToken.email);
+    const existingUser = await getSubUserByEmail(existingToken.email);
 
     if (!existingUser) {
         return { error: 'Mail inexistente!' };
     }
 
-    await db.user.update({
+    await db.subUser.update({
         where: { id: existingUser.id },
         data: {
             emailVerified: new Date(),

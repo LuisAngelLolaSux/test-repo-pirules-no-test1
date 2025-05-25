@@ -14,11 +14,19 @@ import ImprovedCheckoutPage from "@/app/dashboard/payment-methods/_components/Ad
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
-  throw new Error("NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined");
+
+if (
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined ||
+  process.env.NEXT_PUBLIC_LOLA_USER_STRIPE_ID === undefined
+) {
+  throw new Error(
+    "NEXT_PUBLIC_STRIPE_PUBLIC_KEY or NEXT_PUBLIC_LOLA_USER_STRIPE_ID is not defined"
+  );
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!, {
+  stripeAccount: process.env.NEXT_PUBLIC_LOLA_USER_STRIPE_ID,
+});
 
 export default function AddPaymentMethodDialog() {
   const [open, setOpen] = React.useState(false);
