@@ -29,10 +29,26 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  lolaParentId  String?         // Added field for LOLA_USER_ID tracking
   role UserRole @default(USER)
   accounts      Account[]
   isTwoFactorEnabled Boolean @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  // sessions      Session[]
+  // Authenticator Authenticator[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SubUser {
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  password      String?
+  lolaParentId  String?         // Added field for LOLA_USER_ID tracking
+  role UserRole @default(USER)
   // sessions      Session[]
   // Authenticator Authenticator[]
  

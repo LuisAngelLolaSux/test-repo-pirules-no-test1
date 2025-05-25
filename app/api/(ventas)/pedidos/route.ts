@@ -141,8 +141,16 @@ export const POST = async (req: NextRequest) => {
       const variantesSeleccionada = [];
 
       // Busca el producto en la base de datos usando su ID
-      const producto = await Producto.findOne({ _id: pedidoInfo.productos[i].id });
+      const productoLean = await Producto.findOne({ _id: pedidoInfo.productos[i].id }).lean({
+        defaults: true,
+      });
+      if (!productoLean) {
+        return new NextResponse("no se encontro producto", { status: 404 });
+      }
+      const producto = Producto.hydrate(productoLean);
+
       console.log("producto", producto);
+      console.log("prdictp variantes combinadas", producto.variantesCombinadas);
       if (producto) {
         // Checamos si el producto pertenece al mismo proveedor
         if (!userId) {
@@ -155,10 +163,9 @@ export const POST = async (req: NextRequest) => {
           }
         }
 
-
         // Itera sobre las variantes combinadas del producto
         console.log("pedidoInfo.producto.variantesCombinadas.length", producto.variantesCombinadas);
-        for (let j = 0; j < producto.variantesCombinadas.length; j++) {
+        for (let j = 0; j < productoLean.variantesCombinadas.length; j++) {
           const varianteCombinada = producto.variantesCombinadas[j];
 
           // Compara el ID de la variante combinada con la variante seleccionada en el pedido

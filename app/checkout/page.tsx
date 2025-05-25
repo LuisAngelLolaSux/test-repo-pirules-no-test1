@@ -289,6 +289,14 @@ export default function CheckoutPage() {
     }
   };
 
+  // Add dummy payment methods and a state to select a method (moved above the conditional return)
+  const paymentMethods = [
+    { id: "pm_visa", label: "Visa ending in 1111" },
+    { id: "pm_mc", label: "Mastercard ending in 2222" },
+    { id: "pm_add", label: "Add new payment method" },
+  ];
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(paymentMethods[0].id);
+
   // Show a loader while the page is not ready
   if (!isPageReady) {
     return <CartLoader />;
@@ -312,6 +320,21 @@ export default function CheckoutPage() {
               tabs={OptionsScreensSinRecoleccion}
               label="Detalles del envío"
             />
+
+            {/* New Payment Method Dropdown */}
+            <div className="my-4">
+              <label className="block mb-2">Select Payment Method:</label>
+              <select
+                value={selectedPaymentMethod}
+                onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                className="p-2 border rounded">
+                {paymentMethods.map((method) => (
+                  <option key={method.id} value={method.id}>
+                    {method.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="h-fit w-full max-w-3xl overflow-hidden rounded-lg bg-white">
               <div className="flex flex-col items-start justify-center p-4">

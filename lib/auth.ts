@@ -1,15 +1,12 @@
-"use server";
-import { getServerSession } from "next-auth";
-import authConfig from "@/auth.config";
-import User from "@/models/auth/User";
-import { connectToDB } from "@/utils/mongoDB";
+// lib/authServer.ts
+import { auth } from "@/auth"; // helper que exportas en auth.ts
 
-export const currentUser = async () => {
-  const session = await getServerSession(authConfig);
-  return session?.user;
-};
+export async function currentUser() {
+  const session = await auth(); // Session | null
+  return session?.user ?? null; // id, email, name, role, …
+}
 
-export const currentRole = async () => {
-  const session = await getServerSession(authConfig);
-  return session?.user?.role;
-};
+export async function currentRole() {
+  const session = await auth();
+  return session?.user?.role ?? null;
+}

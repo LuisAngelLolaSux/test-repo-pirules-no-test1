@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { connectToDB } from "@/utils/mongoDB";
 import { currentUser } from "@/lib/auth";
-import { stripe } from "@/lib/utils";
 import User from "@/models/auth/User";
+import PaymentMethodsClient from "./PaymentMethodsClient";
 
 export default async function PaymentMethodsPage() {
   const user = await currentUser();
@@ -12,13 +12,13 @@ export default async function PaymentMethodsPage() {
 
   await connectToDB();
   const dbUser = await User.findById(user.id);
-  // Example check for existing Stripe customer or setup
-  // const setupIntent = await stripe.setupIntents.create({ customer: dbUser.stripeCustomerId });
+  const stripeCustomerId = dbUser?.stripeCustomerId || "";
 
   return (
-    <div>
-      <h1>Métodos de Pago</h1>
-      {/* ...UI that uses setupIntent, or lists existing payment methods... */}
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">Métodos de Pago</h1>
+      {/* Render durante la gestión de métodos de pago */}
+      <PaymentMethodsClient stripeCustomerId={stripeCustomerId} />
     </div>
   );
 }
