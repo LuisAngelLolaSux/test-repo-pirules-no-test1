@@ -1,3 +1,4 @@
+declare module "tailwindcss-bg-patterns";
 export interface ProductoType {
   _id: Types.ObjectId;
   nombre: string;

@@ -12,9 +12,10 @@ export const GET = async (req: NextRequest) => {
     await connectToDB();
     const { searchParams } = new URL(req.url);
     const pedidoId = searchParams.get("pedidoId");
+    console.log("pedidoIqwdqwdd", pedidoId);
     if (pedidoId) {
       const pedido = await Pedido.findOne({ _id: pedidoId }).populate("productos.producto");
-
+      console.log("pedidodwdw", pedido);
       if (!pedido) return new NextResponse("Pedido not found", { status: 404 });
 
       // If pedido.informacionPago holds the id of a Billing history element,

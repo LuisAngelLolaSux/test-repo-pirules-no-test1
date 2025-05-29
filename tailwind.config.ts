@@ -1,5 +1,8 @@
 import colors from "tailwindcss/colors";
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
+import tailwindScrollbar from "tailwind-scrollbar";
+import tailwindcssBgPatterns from "tailwindcss-bg-patterns";
 const config = {
   darkMode: ["class"],
   content: [
@@ -174,8 +177,7 @@ const config = {
       },
     },
   },
-  plugins: [
-  ],
+  plugins: [tailwindcssAnimate, tailwindScrollbar, tailwindcssBgPatterns],
 } satisfies Config;
 
 export default config;
